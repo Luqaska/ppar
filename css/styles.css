@@ -1,0 +1,81 @@
+@import url("https://cdn.jsdelivr.net/npm/fork-awesome@1.2.0/css/fork-awesome.min.css");
+
+/* Fonts */
+@font-face {
+  font-family: "DejaVu Sans";
+  src: url("fonts/DejaVuSans.ttf");
+  font-style: normal;
+  font-weight: normal;
+}
+
+/* Home */
+.home{
+  font-family:sans-serif;
+  background-color:#ffc90e;
+  background-image:url("https://plan.procrastin.ar/evil_gondola.png");
+  background-size:contain;
+  background-repeat:repeat-x;
+  background-attachment:fixed;
+  text-align:center;
+  margin:1% 0;
+}
+.view{
+  font-family:sans-serif;
+  background-color:#ffdc62;
+  background-image:url("https://plan.procrastin.ar/css/img/bkg.png");
+  background-size:contain;
+  background-repeat:repeat-x;
+  background-attachment:fixed;
+  text-align:center;
+  margin:1% 0;
+}
+.home #logo{font-size:200%;}
+.home span,.home a,div.list,div.item{background:white;}
+div.list{margin:0 30%;}
+.home div.list li{font-size:103%;margin:6px 0;}
+div.pdf{margin:0 20%;}
+
+
+#author{
+  font-size:medium;
+  font-weight:normal;
+  background:white;
+  border-radius:0 0 5px 5px;
+  padding:0 20px
+}
+
+
+.view img{
+  width:500px;
+  height:auto;
+  border:solid 3px black;
+}
+/*.view #logo{color:white;}*/
+.view #logo span{color:black;background:white;}
+
+/**/
+.t{font-weight:bold;color:rgb(255, 183, 38);text-decoration:none;}
+
+/* Tablets */
+@media only screen and (max-width: 1000px) {
+  /* Home */
+  div.list,div.item{margin:0 10%;}
+  div.pdf{margin:0 5%;}
+  .view img{
+    width:300px;
+    height:auto;
+    border:solid 3px black;
+  }
+}
+
+/* Teléfonos */
+@media only screen and (max-width: 600px) {
+  /* Home */
+  div.list,div.item{margin:0 1%;}
+  div.pdf{margin:0 0.5%;}
+  .view img{
+    width:250px;
+    height:auto;
+    border:solid 3px black;
+  }
+}

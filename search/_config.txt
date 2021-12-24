@@ -1,0 +1,5 @@
+<?php
+$TITLE = 'plan.Procrastin.Ar';
+$SUBMIT_MODE = 0; // 0 = Submit is disabled - 1 = The submit file in this server - 2 = Client/server
+$SUBMIT_EXTERNAL_URL = ""; // In case you choosed 2
+?>

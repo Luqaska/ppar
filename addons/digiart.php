@@ -1,0 +1,1 @@
+<?php echo "<pre class='background:white'>".htmlentities($info->{"art"})."</pre>" ?>

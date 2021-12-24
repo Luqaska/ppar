@@ -1,0 +1,1 @@
+<b>Evil Gondola</b><br><a class="t" href="/type.php?c=img">img</a> - <a href='/view.php?id=1'><i>view.php?id=1</i></a><br>  - 

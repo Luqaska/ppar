@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="styles.css">
+<title>Submit - <?= $TITLE ?></title>
+</head>
+<body class="h s" style="background:#380030">
+
+<div id="container">
+<div id="content">
+<div id="header">
+<a href="index.php"><h1><?= $TITLE ?></h1></a>
+<p>Submit [BETA]</p>
+</div>
+
+<div class="form">
+<form method="post">
+<div class="autocomplete">
+  <input type="url" id="myInput" name="name" autofocus placeholder="url">
+  <input type="submit" value="submit">
+</div>
+</form> 
+</div>
+
+<div id='sub'><p>Based on <a href='https://youtu.be/MRoekZ93bpQ'>Yessle</a> - <a href='https://github.com/luqaska/filde'>Code</a> - <a rel='me' href='https://tilde.zone/@lucas'>News</a></p><p>Wanna add a result? Send an e-mail to <a href='mailto:lucas@tilde.team'>lucas@tilde.team</a></p></div><br><br>
+</div>
+</div>
+
+<?php
+if(isset($_POST["name"])){
+if(filter_var($_POST["name"], FILTER_VALIDATE_URL)){
+$allowed=json_decode(file_get_contents("allowed.json"));
+$i0=0;$i1=false;
+while($i0 < count($allowed->{"domains"})){
+  $thing=explode(".",parse_url($_POST["name"], PHP_URL_HOST));
+  $real_domain=$thing[count($thing)-2].".".$thing[count($thing)-1];
+  if($real_domain==$allowed->{"domains"}[$i0]){$i1=true;}
+  $i0++;
+}
+/*var_dump($allowed->{"domains"});
+$thing=explode(".", parse_url($_POST["name"], PHP_URL_HOST));
+var_dump($thing);
+echo parse_url($_POST["name"], PHP_URL_HOST);*/
+$i1=True;
+if($i1){
+
+$address = $_POST["name"];
+$txt = file_get_contents('database.txt');
+$txts = file_get_contents('autosuggest_list.txt');
+
+if(strpos($txt,"<br><a href='".$_POST["name"]."'><i>".htmlentities($_POST["name"])."</i></a><br>") === false or strpos($txt,"<br><a href='".$_POST["name"]."/'><i>".htmlentities($_POST["name"])."/</i></a><br>") === false) {
+
+function extract_title($data){
+$start = "<title";
+$end = "</title>";
+$b = strpos($data,$start);
+$a = strpos($data,$end,$b);
+$length = $a - $b+10;
+$title_temp = substr($data,$b,$length);
+
+$start = ">";
+$end = "</title>";
+$b = strpos($title_temp,$start);
+$a = strpos($title_temp,$end,$b);
+$length = $a - $b+7;
+$title = substr($title_temp,$b+1,$length);
+
+return $title;
+}
+
+function extract_description($data){
+$description = "";
+foreach(preg_split("/[<>]+/",$data) as $line){
+$description_txt = "/" . "description" . "/i";
+$content = "/" . "content=" . "/i";
+if(preg_match($description_txt,$line)&&preg_match($content,$line)){
+$start = "content=";
+$end = '"';
+$b = strpos($line,$start);
+$a = strpos($line,$end,$b+9);
+$length = $a - $b-9;
+$sub_line = substr($line,$b+9,$length);
+
+$sub_line_txt = "/" . $sub_line . "/i";
+if(!(preg_match($sub_line_txt,$description))){ 
+$description .= $sub_line . " ";
+}
+}
+}
+return $description;
+}
+
+function extract_paragraph($data){
+$start = "<p>";
+$end = "</p>";
+$b = strpos($data,$start);
+$a = strpos($data,$end,$b+3);
+$length = $a - $b-6;
+$title = substr($data,$b,$length);
+
+$paragraph = "";
+foreach(preg_split("/[<]+/",$title) as $line){
+$start2 = ">";
+$b2 = strpos($line,$start2);
+$sub_line = trim(substr($line,$b2+1));
+$paragraph .= $sub_line . " ";
+}
+return $paragraph;
+}
+
+function extract_links($data){
+
+		$addresses = "";
+		$link_string =  "/" . "<a" . "/i";		
+		while(preg_match($link_string,$data)){
+		$start = "<a";
+		$end = ">";
+		$beginningPos = strpos($data, $start);
+		$b = $beginningPos;
+		$endPos = strpos($data, $end,$b);
+		$a = $endPos;
+		$lengte = $a-$b+1;
+		$linkje = trim(substr($data, $b+1,$lengte));
+		
+		//ONLY EXTERNAL LINKS:
+		
+		$http_string =  "/" . "http:" . "/i";
+		$https_string =  "/" . "https:" . "/i";				
+		if(preg_match($http_string,$linkje)||preg_match($https_string,$linkje)){
+		
+		$start = "href=";
+		$end = '"';
+		$beginningPos = strpos($linkje, $start);
+		$b = $beginningPos;
+		$endPos = strpos($linkje, $end,$b+6);
+		$a = $endPos;
+		$lengte = $a-$b-6;
+		$linkje_small = trim(substr($linkje, $b+6,$lengte));
+		
+		$start = "http";
+		$end = "?";
+		$beginningPos = strpos($linkje_small, $start);
+		$b = $beginningPos;
+		$endPos = strpos($linkje_small, $end,$b+6);
+		$a = $endPos;
+		$lengte = $a-$b;
+		$linkje_small2 = trim(substr($linkje_small, 0,$lengte));
+		if($linkje_small2 == ""){
+		$real_linkje = $linkje_small;
+		}
+		else{
+		$real_linkje = $linkje_small2;
+		}
+		
+		$link_start = substr($real_linkje, 0,4);
+		if($link_start=="http"){
+		$addresses .= ($real_linkje . "\n");		
+		}
+		}
+		
+		$remove = $linkje;
+		$data = str_replace($remove, "",$data);
+		}
+
+				
+   		return  $addresses;
+
+}
+
+
+
+//if($_SERVER["REQUEST_METHOD"] == "POST"){
+
+$html = file_get_contents($address);
+
+$title = extract_title($html);
+$description = extract_description($html);
+if($description==""){
+$description = extract_paragraph($html);
+}
+
+$links = extract_links($html);
+
+echo "<div id='stw' style='padding:5px;background:#c1c1c1;border-radius:5px;font-family:monospace'>URL: $address<br>Title: $title<br>Description: $description<br><br>Other links found (not indexed): <ul>";
+
+$link = explode("\n",$links); $l_c = 0;
+while($l_c < count($link)-1){
+  echo "<li>$link[$l_c]</li>";
+  $l_c++;
+}
+
+echo "</ul></div>";
+
+$title = substr($title,0,200);
+$title = str_replace("</title>","",$title);
+$description = substr($description,0,400);
+
+if(strpos($title,"\n")!==false){
+  $title=str_replace("\n","  ",$title);
+}
+if(strpos($description,"\n")!=false){
+  $description=str_replace("\n","  ",$description);
+}
+
+
+$txt .= "\n" . "<b>" . $title . "</b><br>" . "<a href='" . $address . "'><i>" . $address . "</i></a>" . "<br>" . $description;
+
+file_put_contents('database.txt',$txt);
+
+/*
+$txts .= "\n\"" . $title . '",';
+file_put_contents('autosuggest_list.txt',$txts);
+
+
+$list_of_links = file_get_contents('list_of_links.txt');
+$list_of_links .= $links; 
+file_put_contents('list_of_links.txt',$list_of_links);
+*/
+
+//}
+
+}else{echo "<p>Indexed URL</p>";}}else{echo "<p>This domain isn't in the <a href='allowed.json'>whitelist</a></p>";}}}
+?>
+
+</div>
+</div>
+
+
+</body>
+</html>
